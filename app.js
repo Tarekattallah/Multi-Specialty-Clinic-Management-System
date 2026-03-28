@@ -1,6 +1,4 @@
 const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet'); 
 const dotenv = require('dotenv');
 const connectDB = require('./src/config/database');
 const authRoutes = require('./src/routes/auth.routes');
@@ -16,8 +14,7 @@ dotenv.config();
 const app = express();
 
 // basic middlewares
-app.use(helmet());
-app.use(cors());
+
 app.use(express.json());
 
 // Routes 
@@ -38,10 +35,10 @@ app.get('/', (req, res) => {
 connectDB();
 
 const PORT = process.env.PORT || 5000;
-// لازم يكونوا في الآخر عشان يمسكوا أي حاجة عدت من الـ routes
+
 app.use(notFound);
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-    console.log(`Server is listening on http://localhost:${PORT}`);
+    console.log(`Server is listening ${PORT}`);
 });

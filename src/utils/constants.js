@@ -1,5 +1,4 @@
 // app constants to avoid typos
-
 const ROLES = {
     PATIENT: 'patient',
     DOCTOR: 'doctor',

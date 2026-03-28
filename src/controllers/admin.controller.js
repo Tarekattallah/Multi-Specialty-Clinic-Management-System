@@ -2,7 +2,6 @@ const Appointment = require('../models/Appointment.model');
 
 const getAllAppointments = async (req, res) => {
     try {
-        // get all appointments for the clinic (admin view)
         const appointments = await Appointment.find()
             .populate('patient', 'name email')
             .populate({

@@ -12,7 +12,6 @@ const getDoctors = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        // req.user.id comes from auth middleware
         const updatedProfile = await doctorService.updateDoctorProfile(req.user.id, req.body);
         res.json({ message: 'Profile updated', profile: updatedProfile });
     } catch (error) {
