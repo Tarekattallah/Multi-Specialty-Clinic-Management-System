@@ -1,84 +1,54 @@
-# Multi-Specialty Clinic Management System
+تمام يا صاحبي، آسف على التنسيق البايظ.
+هعملك نسخة نظيفة ومرتبة جداً من الـ README.md، بتنسيق Markdown صحيح وواضح، مع أيقونات مناسبة وجدول API مرتب.
+انسخ الكود ده كامل وحطه في ملف README.md جديد (احذف القديم لو موجود):
+Markdown# 🏥 Multi-Specialty Clinic Management System
 
-A robust **backend API** for managing a multi-specialty medical clinic. Built with **Node.js**, **Express.js**, and **MongoDB** (Mongoose). Supports three user roles: **Patient**, **Doctor**, and **Admin**.
+A complete **backend API** for managing a multi-specialty medical clinic built with Node.js and Express.js.
 
 ## ✨ Features
 
-- **User Authentication & Authorization**
-  - Register & Login with JWT
-  - Password hashing using bcryptjs
-  - Role-based access control (Patient, Doctor, Admin)
-
-- **Doctor Management**
-  - View all doctors
-  - Doctors can update their profile (bio, phone, experience, specialties)
-  - Automatic DoctorProfile creation upon doctor registration
-
-- **Appointment System**
-  - Patients can book appointments
-  - Prevention of double booking (same doctor, same time slot)
-  - View appointments (Patient sees their own, Doctor sees theirs)
-
-- **Medical Records**
-  - Doctors can add medical records after appointments
-  - Automatic update of appointment status to "completed"
-
-- **Specialties Management** (Newly Added)
-  - Admin can add/delete specialties
-  - Doctors can assign specialties to their profile
-  - Specialties are populated in doctor listings
-
-- **Admin Features**
-  - View all appointments in the system
-
-- **Security & Best Practices**
-  - JWT Authentication
-  - Input validation with Joi
-  - Global error handling
-  - Protected routes with role middleware
-  - Separation of concerns (MVC + Service Layer)
+- User Registration & Login with JWT Authentication
+- Role-based Authorization (Patient, Doctor, Admin)
+- Doctor Profile Management
+- Appointment Booking System with double-booking prevention
+- Medical Records Management
+- Specialties Management (Admin + Doctor assignment)
+- Global Error Handling & Input Validation
 
 ## 🛠️ Tech Stack
 
 - **Backend**: Node.js + Express.js
-- **Database**: MongoDB with Mongoose ODM
+- **Database**: MongoDB (Mongoose ODM)
 - **Authentication**: JWT + bcryptjs
 - **Validation**: Joi
-- **Environment**: dotenv
+- **Environment Management**: dotenv
 
-## 📁 Project Structure
-Multi-Specialty-Clinic-Management-System/
-├── app.js
-├── src/
-│   ├── config/
-│   │   └── database.js
-│   ├── controllers/
-│   ├── routes/
-│   ├── services/
-│   ├── models/
-│   ├── middlewares/
-│   ├── validators/
-│   └── constants.js
-├── .env
-├── package.json
-└── README.md
-text## 🚀 Installation & Setup
+## 📂 Project Structure
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd Multi-Specialty-Clinic-Management-System
+```bash
+src/
+├── config/
+├── controllers/
+├── routes/
+├── services/
+├── models/
+├── middlewares/
+├── validators/
+└── constants.js
+🚀 Installation & Setup
 
+Clone the repositoryBashgit clone <your-repo-link>
+cd Multi-Specialty-Clinic-Management-System
 Install dependenciesBashnpm install
-Create .env file in the root directory and add:envPORT=5000
+Create .env file in the root folder:envPORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/clinic-db
-JWT_SECRET=your_very_strong_secret_key_here
+JWT_SECRET=your_super_secret_jwt_key_12345
 NODE_ENV=development
-Start the serverBashnpm run dev
+Run the serverBashnpm run dev
 
-Server will run on http://localhost:5000
+Server will start at http://localhost:5000
 📋 API Endpoints
-Auth Routes
+🔐 Authentication
 
 
 
@@ -102,8 +72,8 @@ Auth Routes
 
 
 
-MethodEndpointDescriptionAccessPOST/api/auth/registerRegister new userPublicPOST/api/auth/loginLogin userPublic
-Specialties Routes (New)
+MethodEndpointDescriptionAccessPOST/api/auth/registerRegister new userPublicPOST/api/auth/loginUser loginPublic
+🩺 Specialties
 
 
 
@@ -133,8 +103,8 @@ Specialties Routes (New)
 
 
 
-MethodEndpointDescriptionAccessGET/api/specialtiesGet all specialtiesPublicPOST/api/specialtiesCreate new specialtyAdminDELETE/api/specialties/:idDelete specialtyAdmin
-Doctors Routes
+MethodEndpointDescriptionAccessGET/api/specialtiesGet all specialtiesPublicPOST/api/specialtiesCreate new specialtyAdminDELETE/api/specialties/:idDelete a specialtyAdmin
+👨‍⚕️ Doctors
 
 
 
@@ -164,8 +134,8 @@ Doctors Routes
 
 
 
-MethodEndpointDescriptionAccessGET/api/doctorsGet all doctors (with specialties)AllPUT/api/doctors/profileUpdate doctor profileDoctorPUT/api/doctors/profile/specialtiesUpdate doctor specialtiesDoctor
-Appointments Routes
+MethodEndpointDescriptionAccessGET/api/doctorsGet all doctors (with specialties)AllPUT/api/doctors/profileUpdate doctor profileDoctorPUT/api/doctors/profile/specialtiesAssign specialties to doctorDoctor
+📅 Appointments
 
 
 
@@ -189,8 +159,8 @@ Appointments Routes
 
 
 
-MethodEndpointDescriptionAccessPOST/api/appointmentsBook new appointmentPatientGET/api/appointmentsGet user appointmentsPatient/Doctor
-Medical Records Routes
+MethodEndpointDescriptionAccessPOST/api/appointmentsBook a new appointmentPatientGET/api/appointmentsGet user's appointmentsPatient/Doctor
+📋 Medical Records
 
 
 
@@ -209,7 +179,7 @@ Medical Records Routes
 
 
 MethodEndpointDescriptionAccessPOST/api/medical-recordsAdd medical recordDoctor
-Admin Routes
+🔧 Admin
 
 
 
@@ -228,51 +198,52 @@ Admin Routes
 
 
 MethodEndpointDescriptionAccessGET/api/admin/appointmentsGet all appointmentsAdmin
-🧪 Example Requests (Postman)
-Register Doctor:
+🧪 Example Requests
+1. Register a Doctor
 JSONPOST /api/auth/register
 {
-  "name": "Dr. Ahmed Ali",
-  "email": "ahmed@clinic.com",
+  "name": "Dr. Mohamed Ali",
+  "email": "mohamed@clinic.com",
   "password": "123456",
   "role": "doctor"
 }
-Book Appointment:
+2. Update Doctor Specialties
+JSONPUT /api/doctors/profile/specialties
+Authorization: Bearer <your_token>
+
+{
+  "specialties": [
+    "67f8a1b2c3d4e5f678901234",
+    "67f8a1b2c3d4e5f678901235"
+  ]
+}
+3. Book Appointment
 JSONPOST /api/appointments
-Authorization: Bearer <token>
+Authorization: Bearer <patient_token>
+
 {
   "doctorId": "67f8a1b2c3d4e5f678901234",
-  "dateTime": "2026-04-05T10:00:00Z",
-  "notes": "Check-up"
-}
-Update Doctor Specialties:
-JSONPUT /api/doctors/profile/specialties
-Authorization: Bearer <doctor_token>
-{
-  "specialties": ["67f8a1b2c3d4e5f678901234", "67f8a1b2c3d4e5f678901235"]
+  "dateTime": "2026-04-10T11:00:00Z",
+  "notes": "Routine check-up"
 }
 🔐 Roles & Permissions
 
-Patient: Book appointments, view own appointments
-Doctor: Update profile, add specialties, view own appointments, add medical records
-Admin: Manage specialties, view all appointments
+Patient: Can book and view their appointments
+Doctor: Can update profile, manage specialties, view their appointments, add medical records
+Admin: Can manage specialties and view all appointments
 
-🛡️ Error Handling
+🛡️ Security Features
 
-Global error middleware
-Joi validation errors
-Custom messages for common errors (double booking, invalid ID, etc.)
-Different behavior in Development vs Production
+JWT Token Authentication
+Role-based Middleware Protection
+Password Hashing with bcryptjs
+Joi Input Validation
+Global Error Handling
 
-🚀 Future Improvements
+🚀 Future Enhancements
 
-Add appointment cancellation
-Time slot management for doctors
-Email/SMS notifications
+Appointment cancellation feature
+Doctor availability & time slots
+Email notifications
 Search doctors by specialty
-Pagination & filtering
-Rate limiting
-Frontend (React)
-
-📝 License
-This project is for educational purposes.
+Frontend integration (React.js)
