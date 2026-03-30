@@ -25,240 +25,146 @@ A powerful **backend API** for managing a multi-specialty medical clinic with th
 
 ## ✨ Features
 
-- **Authentication System**
-  - User registration and login with JWT
-  - Secure password hashing using bcryptjs
-
-- **Role-Based Access Control**
-  - Patient, Doctor, and Admin roles
-
-- **Doctor Management**
-  - View all doctors with their specialties
-  - Doctors can update their profile and assign specialties
-
-- **Appointment System**
-  - Book appointments with double-booking prevention
-  - Patients and doctors can view their appointments
-
-- **Medical Records**
-  - Doctors can add medical records after appointments
-  - Automatic status update to "completed"
-
-- **Specialties Management** *(New)*
-  - Admin can add and delete specialties
-  - Doctors can assign multiple specialties to their profile
-
-- **Admin Dashboard**
-  - View all appointments in the system
+- **Authentication System** — User registration & login with JWT, secure password hashing via bcryptjs
+- **Role-Based Access Control** — Patient, Doctor, and Admin roles
+- **Doctor Management** — View all doctors with specialties; doctors can update profiles
+- **Appointment System** — Book appointments with double-booking prevention
+- **Medical Records** — Doctors can add records after appointments; status auto-updates to "completed"
+- **Specialties Management** — Admin can add/delete specialties; doctors can assign multiple specialties
+- **Admin Dashboard** — View all appointments across the system
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Node.js + Express.js
-- **Database**: MongoDB with Mongoose
-- **Authentication**: JWT + bcryptjs
-- **Validation**: Joi
-- **Architecture**: MVC + Service Layer Pattern
+| Layer | Technology |
+|---|---|
+| Backend | Node.js + Express.js |
+| Database | MongoDB + Mongoose |
+| Auth | JWT + bcryptjs |
+| Validation | Joi |
+| Architecture | MVC + Service Layer Pattern |
 
 ---
 
 ## 📁 Project Structure
 
-```bash
+```
 src/
-├── controllers/          # Request & Response handling
-├── routes/               # API Routes
-├── services/             # Business Logic
-├── models/               # Mongoose Schemas
-├── middlewares/          # Auth, Role, Error handling
-├── validators/           # Joi Validation Schemas
-├── config/               # Database connection
+├── controllers/     # Request & Response handling
+├── routes/          # API Routes
+├── services/        # Business Logic
+├── models/          # Mongoose Schemas
+├── middlewares/     # Auth, Role, Error handling
+├── validators/      # Joi Validation Schemas
+├── config/          # Database connection
 └── constants.js
+```
 
-🚀 Installation & Setup
+---
 
-Clone the repositoryBashgit clone <your-repository-url>
+## 🚀 Installation & Setup
+
+**1. Clone the repository**
+```bash
+git clone <your-repository-url>
 cd Multi-Specialty-Clinic-Management-System
-Install dependenciesBashnpm install
-Create .env file in the root directory:envPORT=5000
+```
+
+**2. Install dependencies**
+```bash
+npm install
+```
+
+**3. Create `.env` file in the root directory**
+```env
+PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/clinic-db
 JWT_SECRET=your_very_strong_secret_key_here_change_in_production
 NODE_ENV=development
-Run the development serverBashnpm run dev
+```
 
-Server will run on http://localhost:5000
+**4. Run the development server**
+```bash
+npm run dev
+```
 
-📡 API Endpoints
-🔐 Authentication
+Server will run on `http://localhost:5000`
 
+---
 
+## 📡 API Endpoints
 
+### 🔐 Authentication
 
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| POST | `/api/auth/register` | Register new user | Public |
+| POST | `/api/auth/login` | Login | Public |
 
+### 🩺 Specialties
 
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/specialties` | Get all specialties | Public |
+| POST | `/api/specialties` | Create specialty | Admin |
+| DELETE | `/api/specialties/:id` | Delete specialty | Admin |
 
+### 👨‍⚕️ Doctors
 
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/doctors` | Get all doctors | All |
+| PUT | `/api/doctors/profile` | Update doctor profile | Doctor |
+| PUT | `/api/doctors/profile/specialties` | Assign specialties to doctor | Doctor |
 
+### 📅 Appointments
 
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| POST | `/api/appointments` | Book appointment | Patient |
+| GET | `/api/appointments` | Get user appointments | Patient / Doctor |
 
+### 📋 Medical Records
 
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| POST | `/api/medical-records` | Add medical record | Doctor |
 
+### 🔧 Admin
 
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/admin/appointments` | View all appointments | Admin |
 
+---
 
+## 🧪 Example Requests
 
-
-
-
-
-
-
-MethodEndpointDescriptionAccessPOST/api/auth/registerRegister new userPublicPOST/api/auth/loginLoginPublic
-🩺 Specialties
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-MethodEndpointDescriptionAccessGET/api/specialtiesGet all specialtiesPublicPOST/api/specialtiesCreate specialtyAdminDELETE/api/specialties/:idDelete specialtyAdmin
-👨‍⚕️ Doctors
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-MethodEndpointDescriptionAccessGET/api/doctorsGet all doctorsAllPUT/api/doctors/profileUpdate doctor profileDoctorPUT/api/doctors/profile/specialtiesAssign specialties to doctorDoctor
-📅 Appointments
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-MethodEndpointDescriptionAccessPOST/api/appointmentsBook appointmentPatientGET/api/appointmentsGet user appointmentsPatient/Doctor
-📋 Medical Records
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-MethodEndpointDescriptionAccessPOST/api/medical-recordsAdd medical recordDoctor
-🔧 Admin
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-MethodEndpointDescriptionAccessGET/api/admin/appointmentsView all appointmentsAdmin
-
-🧪 Example Requests
-Register Doctor
-JSONPOST /api/auth/register
+**Register Doctor**
+```json
+POST /api/auth/register
 {
   "name": "Dr. Ahmed Mohamed",
   "email": "ahmed@clinic.com",
   "password": "123456",
   "role": "doctor"
 }
-Assign Specialties to Doctor
-JSONPUT /api/doctors/profile/specialties
+```
+
+**Assign Specialties to Doctor**
+```json
+PUT /api/doctors/profile/specialties
 Authorization: Bearer <doctor_token>
 
 {
   "specialties": ["67f8a1b2c3d4e5f678901234", "67f8a1b2c3d4e5f678901235"]
 }
-Book Appointment
-JSONPOST /api/appointments
+```
+
+**Book Appointment**
+```json
+POST /api/appointments
 Authorization: Bearer <patient_token>
 
 {
@@ -266,49 +172,40 @@ Authorization: Bearer <patient_token>
   "dateTime": "2026-04-15T09:30:00Z",
   "notes": "Follow-up visit"
 }
+```
 
-🔐 Roles & Permissions
+---
 
+## 🔐 Roles & Permissions
 
+| Role | Can Do |
+|------|--------|
+| Patient | Book appointments, view own appointments |
+| Doctor | Update profile, manage specialties, add medical records, view own appointments |
+| Admin | Manage specialties, view all appointments |
 
+---
 
+## 🛡️ Security Features
 
+- JWT Authentication
+- Role-based Authorization Middleware
+- Password Hashing with bcryptjs
+- Joi Input Validation
+- Global Error Handling
+- Protected Routes
 
+---
 
+## 🚀 Future Improvements
 
+- Appointment cancellation & rescheduling
+- Doctor availability time slots
+- Email/SMS notifications
+- Advanced search & filtering
+- Rate limiting & security headers
+- Frontend (React.js)
 
+---
 
-
-
-
-
-
-
-
-
-
-
-
-RoleCan DoPatientBook appointments, view own appointmentsDoctorUpdate profile, manage specialties, add medical records, view own appointmentsAdminManage specialties, view all appointments
-
-🛡️ Security Features
-
-JWT Authentication
-Role-based Authorization Middleware
-Password Hashing with bcryptjs
-Joi Input Validation
-Global Error Handling
-Protected Routes
-
-
-🚀 Future Improvements
-
-Appointment cancellation & rescheduling
-Doctor availability time slots
-Email/SMS notifications
-Advanced search & filtering
-Rate limiting & security headers
-Frontend (React.js)
-
-
-Made with ❤️ for educational purposes
+> Made with ❤️ for educational purposes
