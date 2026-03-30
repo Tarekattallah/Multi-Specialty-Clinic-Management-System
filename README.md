@@ -1,7 +1,4 @@
-تمام يا صاحبي، آسف على التنسيق البايظ.
-هعملك نسخة نظيفة ومرتبة جداً من الـ README.md، بتنسيق Markdown صحيح وواضح، مع أيقونات مناسبة وجدول API مرتب.
-انسخ الكود ده كامل وحطه في ملف README.md جديد (احذف القديم لو موجود):
-Markdown# 🏥 Multi-Specialty Clinic Management System
+# 🏥 Multi-Specialty Clinic Management System
 
 A complete **backend API** for managing a multi-specialty medical clinic built with Node.js and Express.js.
 
