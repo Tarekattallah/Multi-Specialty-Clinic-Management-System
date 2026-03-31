@@ -1,13 +1,14 @@
 const DoctorProfile = require('../models/DoctorProfile.model');
+const Specialty = require('../models/Specialty.model');
 
 const getAllDoctors = async () => {
-    // get all doctors and populate user info
-    const doctors = await DoctorProfile.find().populate('user', 'name email');
+    const doctors = await DoctorProfile.find()
+        .populate('user', 'name email')
+        .populate('specialties', 'name');
     return doctors;
 };
 
 const updateDoctorProfile = async (userId, profileData) => {
-    // update profile based on logged-in user id
     const profile = await DoctorProfile.findOneAndUpdate(
         { user: userId },
         profileData,
@@ -21,7 +22,32 @@ const updateDoctorProfile = async (userId, profileData) => {
     return profile;
 };
 
+const updateDoctorSpecialties = async (userId, specialtyIds) => {
+    if (specialtyIds && specialtyIds.length > 0) {
+        const existingSpecialties = await Specialty.find({
+            _id: { $in: specialtyIds }
+        });
+
+        if (existingSpecialties.length !== specialtyIds.length) {
+            throw new Error('One or more specialties not found');
+        }
+    }
+
+    const profile = await DoctorProfile.findOneAndUpdate(
+        { user: userId },
+        { specialties: specialtyIds || [] },
+        { new: true, runValidators: true }
+    ).populate('specialties', 'name');
+
+    if (!profile) {
+        throw new Error('Profile not found');
+    }
+
+    return profile;
+};
+
 module.exports = {
     getAllDoctors,
-    updateDoctorProfile
+    updateDoctorProfile,
+    updateDoctorSpecialties
 };

@@ -4,16 +4,22 @@ const DoctorProfile = require('../models/DoctorProfile.model');
 const bookAppointment = async (patientId, appointmentData) => {
     const { doctorId, dateTime, notes } = appointmentData;
 
-    // check if doctor exists
+    // 1. Check if doctor exists
     const doctor = await DoctorProfile.findById(doctorId);
     if (!doctor) {
         throw new Error('Doctor not found');
     }
 
-    // core logic: prevent double booking (same doctor, same time, not cancelled)
+    // 2. Convert dateTime to proper Date object
+    const appointmentDate = new Date(dateTime);
+    if (isNaN(appointmentDate.getTime())) {
+        throw new Error('Invalid date format');
+    }
+
+    // 3. Prevent double booking
     const existingAppt = await Appointment.findOne({
         doctor: doctorId,
-        dateTime: dateTime,
+        dateTime: appointmentDate,
         status: { $ne: 'cancelled' }
     });
 
@@ -21,12 +27,13 @@ const bookAppointment = async (patientId, appointmentData) => {
         throw new Error('This time slot is already booked');
     }
 
-    // create the appointment
+    // 4. Create appointment
     const appointment = await Appointment.create({
         patient: patientId,
         doctor: doctorId,
-        dateTime,
-        notes
+        dateTime: appointmentDate,
+        notes: notes || '',
+        status: 'pending'
     });
 
     return appointment;
@@ -38,7 +45,6 @@ const getUserAppointments = async (userId, role) => {
     if (role === 'patient') {
         query.patient = userId;
     } else if (role === 'doctor') {
-        // get doctor profile id first
         const doctorProfile = await DoctorProfile.findOne({ user: userId });
         if (doctorProfile) {
             query.doctor = doctorProfile._id;

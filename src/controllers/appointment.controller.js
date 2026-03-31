@@ -3,7 +3,7 @@ const appointmentService = require('../services/appointment.service');
 
 const createAppointment = async (req, res) => {
     try {
-        // validate request body
+        // Validate request body
         const { error, value } = bookAppointmentSchema.validate(req.body, { abortEarly: false });
         if (error) {
             return res.status(400).json({
@@ -12,29 +12,45 @@ const createAppointment = async (req, res) => {
             });
         }
 
-        // only patients can book
+        // Only patients can book appointments
         if (req.user.role !== 'patient') {
-            return res.status(403).json({ message: 'Only patients can book appointments' });
+            return res.status(403).json({ 
+                message: 'Only patients can book appointments' 
+            });
         }
 
-        const appointment = await appointmentService.bookAppointment(req.user.id, value);
-        res.status(201).json({ message: 'Appointment booked successfully', appointment });
+        // Important: Use req.user._id (not .id)
+        const appointment = await appointmentService.bookAppointment(req.user._id, value);
+
+        res.status(201).json({
+            message: 'Appointment booked successfully',
+            appointment
+        });
 
     } catch (error) {
-        console.log('book appt error:', error.message);
-        if (error.message === 'This time slot is already booked' || error.message === 'Doctor not found') {
+        console.error('Book appointment error:', error.message);
+
+        // Handle known business errors
+        if (error.message === 'Doctor not found' ||
+            error.message === 'This time slot is already booked' ||
+            error.message === 'Invalid date format') {
             return res.status(400).json({ message: error.message });
         }
-        res.status(500).json({ message: 'Server error' });
+
+        // Unknown errors
+        res.status(500).json({ 
+            message: 'Server error',
+            error: error.message   // مؤقتاً عشان نشوف الخطأ الحقيقي
+        });
     }
 };
 
 const getAppointments = async (req, res) => {
     try {
-        const appointments = await appointmentService.getUserAppointments(req.user.id, req.user.role);
+        const appointments = await appointmentService.getUserAppointments(req.user._id, req.user.role);
         res.json(appointments);
     } catch (error) {
-        console.log('get appts error:', error.message);
+        console.error('Get appointments error:', error.message);
         res.status(500).json({ message: 'Server error' });
     }
 };
