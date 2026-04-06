@@ -1,199 +1,211 @@
+# 🏥 Multi-Specialty Clinic Management System
 
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
 
-Student Course Management System
-C++ Console Application
+A powerful **backend API** for managing a multi-specialty medical clinic with three user roles: **Patient**, **Doctor**, and **Admin**.
 
-Version 2.0  —  April 2026
+---
 
-C++17	OOP	File I/O	ANSI Colors	v2.0	Open Source
+## 📋 Table of Contents
 
-Developed by: [Your Name]
-GitHub: github.com/[your-username]/student-course-manager
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Installation & Setup](#-installation--setup)
+- [API Endpoints](#-api-endpoints)
+- [Example Requests](#-example-requests)
+- [Roles & Permissions](#-roles--permissions)
+- [Security Features](#-security-features)
+- [Future Improvements](#-future-improvements)
 
+---
 
-1. Project Overview
-Student Course Management System is a C++ console application built using Object-Oriented Programming principles. It allows managing student records, enrolling them in courses, and performing various operations with a colorful and intuitive terminal interface.
+## ✨ Features
 
-The project has been developed in two major versions:
-•	Version 1.0  —  Initial implementation with basic CRUD and file persistence
-•	Version 2.0  —  Expanded features, bug fixes, and a redesigned CMD interface
+- **Authentication System** — User registration & login with JWT, secure password hashing via bcryptjs
+- **Role-Based Access Control** — Patient, Doctor, and Admin roles
+- **Doctor Management** — View all doctors with specialties; doctors can update profiles
+- **Appointment System** — Book appointments with double-booking prevention
+- **Medical Records** — Doctors can add records after appointments; status auto-updates to "completed"
+- **Specialties Management** — Admin can add/delete specialties; doctors can assign multiple specialties
+- **Admin Dashboard** — View all appointments across the system
 
-Project Structure
-File	Role
-Person.h / Person.cpp	Base class — stores name & email, virtual display()
-Student.h / Student.cpp	Inherits Person — adds ID, GPA, courses set, display with ANSI colors
-CourseManager.h / .cpp	Core logic — map<int,Student>, all operations, file I/O
-Menu.h / Menu.cpp	User interface — colored box menu, input handling
-main.cpp	Entry point — creates Menu and calls run()
-records.txt	Auto-generated data file (replaces old database.txt)
+---
 
-2. What Changed: v1.0  →  v2.0
-The following table shows the key differences between the original version and the updated version:
+## 🛠️ Tech Stack
 
-⛔  Version 1.0  (Old)	✅  Version 2.0  (New)
-9 menu options (1-10 with gap)	13 menu options (0-12, clean numbering)
-Plain = borders in terminal	Unicode box-drawing ╔══╗ frame with ANSI colors
-No color in output	Full ANSI color scheme: Cyan, Green, Yellow, Red
-Student display uses ---- dividers	Student card with +-----+ border & GPA label badge
-No Update feature	Option [4]: Update Name, Email, or GPA interactively
-No Drop Course feature	Option [7]: Remove a specific course from student
-No statistics	Option [10]: Total students, avg/top/lowest GPA report
-database.txt  (could duplicate data)	records.txt  (single save, no append bug)
-Exit is option 10	Exit is option 0 (standard convention)
-Error messages plain text	Errors use [!] red prefix, success uses [✓] green
-appendStudentToFile() causes duplicates	Removed — only saveToFile() is called on any write
+| Layer | Technology |
+|---|---|
+| Backend | Node.js + Express.js |
+| Database | MongoDB + Mongoose |
+| Auth | JWT + bcryptjs |
+| Validation | Joi |
+| Architecture | MVC + Service Layer Pattern |
 
-3. Bugs Fixed from v1.0
-Three bugs were identified and fixed in the original code:
+---
 
-🐛  Bug: Duplicate Data on Add
-Problem: AddStudent() called both saveToFile() (which rewrites everything) and appendStudentToFile() (which appends again). Every new student got written twice to database.txt. This was clearly visible in the original database.txt file.
-Fix: Removed appendStudentToFile() entirely. AddStudent() now calls only saveToFile() once.
-🐛  Bug: Dead Code After return in searchStudent()
-Problem: There was an ifstream block placed after a return statement — it was unreachable and never executed.
-Fix: Removed the dead code block. The function now returns cleanly.
-🐛  Bug: Wrong Logic in appendStudentToFile()
-Problem: The guard condition was (students.count(id) > 1) which is never true for a map (keys are unique). The check was supposed to prevent duplicates but did nothing.
-Fix: Made irrelevant by removing the function entirely — the root cause was the dual-write design.
+## 📁 Project Structure
 
-4. Complete Feature List
+```
+src/
+├── controllers/     # Request & Response handling
+├── routes/          # API Routes
+├── services/        # Business Logic
+├── models/          # Mongoose Schemas
+├── middlewares/     # Auth, Role, Error handling
+├── validators/      # Joi Validation Schemas
+├── config/          # Database connection
+└── constants.js
+```
 
-#	Feature	Description	Status
-1	Add Student	Enter ID, Name, GPA (0.0–4.0), Email — saved immediately to records.txt	v1.0
-2	Remove Student	Delete a student by ID — file is updated automatically	v1.0
-3	Search Student	Find a student by ID and display their full card	v1.0
-4	Update Student	Choose to update Name, Email, or GPA for an existing student	NEW
-5	Display All Students	Print all students with total count header	v1.0
-6	Enroll in Course	Add a course to student's set (duplicates ignored automatically)	v1.0
-7	Drop a Course	Remove a specific course from a student's enrollment	NEW
-8	Show Student Courses	List all enrolled courses for a student by ID	v1.0
-9	Sort by GPA	Display all students ranked highest GPA first with rank number	v1.0
-10	Statistics	Total students, average GPA, highest & lowest GPA with names, enrollment count	NEW
-11	Save to File	Manually save all data to records.txt	v1.0
-12	Load from File	Load data from records.txt into memory	v1.0
-0	Exit	Quit the program cleanly	v1.0
+---
 
-5. New Features — Detailed
-5.1  Update Student  [4]
-Allows editing an existing student's data without removing and re-adding them. After entering the student ID, the user picks what to change:
-•	Name — enter new full name
-•	Email — enter new email address
-•	GPA — enter new value; validated to be in range 0.0–4.0
-Changes are saved to records.txt immediately after the update.
+## 🚀 Installation & Setup
 
-5.2  Drop Course  [7]
-Removes a specific course from a student's course set. If the student or course is not found, an error message is shown. The data file is updated after a successful drop.
+**1. Clone the repository**
+```bash
+git clone <your-repository-url>
+cd Multi-Specialty-Clinic-Management-System
+```
 
-5.3  Statistics  [10]
-Displays a statistics panel with the following information:
-•	Total number of registered students
-•	Average GPA across all students
-•	Highest GPA — with the student's name
-•	Lowest GPA — with the student's name
-•	Number of students currently enrolled in at least one course
+**2. Install dependencies**
+```bash
+npm install
+```
 
-6. CMD Interface Redesign
-The terminal interface was completely redesigned to look different from the original version:
+**3. Create `.env` file in the root directory**
+```env
+PORT=5000
+MONGO_URI=mongodb://127.0.0.1:27017/clinic-db
+JWT_SECRET=your_very_strong_secret_key_here_change_in_production
+NODE_ENV=development
+```
 
-Main Menu — Old vs New
-v1.0 Style	v2.0 Style
- ================================================
-    Student Course Management System
- ================================================
-   1)  Add Student
-   2)  Remove Student
-   3)  Search Student
-   ...
-   10) Exit
- ================================================
-   Choice: _	 ╔═══════════════════════════════╗
- ║  STUDENT COURSE MANAGER v2.0  ║
- ╠═══════════════════════════════╣
- ║  [1] Add Student             ║
- ║  [4] Update Student   NEW    ║
- ║  [7] Drop a Course    NEW    ║
- ║  [10] Statistics      NEW    ║
- ╠═══════════════════════════════╣
- ║  [0] Exit                    ║
- ╚═══════════════════════════════╝
- >> Choice: _
+**4. Run the development server**
+```bash
+npm run dev
+```
 
-Color scheme used in v2.0:
-•	Cyan (\033[96m)  — borders, section headers
-•	Yellow (\033[93m)  — title, student IDs, rank numbers
-•	Green (\033[92m)  — success messages [✓], Excellent GPA badge
-•	Red (\033[91m)  — error messages [!], Poor GPA badge
-•	Magenta (\033[95m)  — course names in student card
-•	ANSI Reset (\033[0m)  — applied after every colored segment
+Server will run on `http://localhost:5000`
 
-7. How to Compile and Run
-Windows — Visual Studio
-1.	Open the .vcxproj file or create a new Console App project
-2.	Add all .h and .cpp files to the project
-3.	Enable ANSI color support: go to Project Properties → Linker → System → SubSystem → Console
-4.	Build and run with Ctrl+F5
+---
 
-Linux / macOS — GCC
-Compile all files together with g++:
+## 📡 API Endpoints
 
-g++ -std=c++17 -o StudentSys main.cpp Person.cpp Student.cpp CourseManager.cpp Menu.cpp
+### 🔐 Authentication
 
-./StudentSys
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| POST | `/api/auth/register` | Register new user | Public |
+| POST | `/api/auth/login` | Login | Public |
 
+### 🩺 Specialties
 
-Note: ANSI colors work automatically in any modern Linux/macOS terminal. On older Windows CMD, enable virtual terminal processing or use Windows Terminal / WSL.
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/specialties` | Get all specialties | Public |
+| POST | `/api/specialties` | Create specialty | Admin |
+| DELETE | `/api/specialties/:id` | Delete specialty | Admin |
 
-8. Class Architecture
-The project uses a simple inheritance chain with a composition relationship:
+### 👨‍⚕️ Doctors
 
-         +------------------+
-         |     Person       |   (Base Class)
-         |  - m_name        |
-         |  - m_email       |
-         |  + display()     |   virtual
-         +--------+---------+
-                  |  inherits
-         +--------+---------+
-         |     Student      |
-         |  - m_id          |
-         |  - m_GPA         |
-         |  - courses (set) |
-         |  + display()     |   override + ANSI colors
-         |  + DropCourse()  |   NEW in v2.0
-         +--------+---------+
-                  |  stored in map<int, Student>
-         +--------+---------+
-         |  CourseManager   |   (Business Logic)
-         |  + AddStudent()  |
-         |  + updateStudent()|  NEW in v2.0
-         |  + dropCourse()  |  NEW in v2.0
-         |  + showStatistics()|  NEW in v2.0
-         |  + saveToFile()  |
-         +--------+---------+
-                  |  used by
-         +--------+---------+
-         |      Menu        |   (UI Layer)
-         |  + showMenu()    |   Unicode box + ANSI
-         |  + handleInput() |
-         +------------------+
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/doctors` | Get all doctors | All |
+| PUT | `/api/doctors/profile` | Update doctor profile | Doctor |
+| PUT | `/api/doctors/profile/specialties` | Assign specialties to doctor | Doctor |
 
-9. Data File Format  (records.txt)
-Each line represents one student in pipe-delimited format:
+### 📅 Appointments
 
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| POST | `/api/appointments` | Book appointment | Patient |
+| GET | `/api/appointments` | Get user appointments | Patient / Doctor |
 
-ID|Name|Email|GPA|course1,course2,course3
+### 📋 Medical Records
 
-Example:
-101|Mohamed Ali|m.ali@uni.edu|3.8|Math,Physics,CS101
-102|Sara Ahmed|sara@uni.edu|2.5|
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| POST | `/api/medical-records` | Add medical record | Doctor |
 
-If a student has no courses, the courses field is left empty after the last pipe. The file is updated automatically after every add, remove, update, enroll, or drop operation.
+### 🔧 Admin
 
-10. Possible Future Improvements
-•	Search by Name (partial match with string::find)
-•	Filter students by GPA range
-•	Export report to a formatted .txt file
-•	Add credit hours per course
-•	Add a Course class with max capacity
-•	Login system with Admin / Student roles
-•	GUI frontend using Qt or a web API wrapper
+| Method | Endpoint | Description | Access |
+|--------|----------|-------------|--------|
+| GET | `/api/admin/appointments` | View all appointments | Admin |
+
+---
+
+## 🧪 Example Requests
+
+**Register Doctor**
+```json
+POST /api/auth/register
+{
+  "name": "Dr. Ahmed Mohamed",
+  "email": "ahmed@clinic.com",
+  "password": "123456",
+  "role": "doctor"
+}
+```
+
+**Assign Specialties to Doctor**
+```json
+PUT /api/doctors/profile/specialties
+Authorization: Bearer <doctor_token>
+
+{
+  "specialties": ["67f8a1b2c3d4e5f678901234", "67f8a1b2c3d4e5f678901235"]
+}
+```
+
+**Book Appointment**
+```json
+POST /api/appointments
+Authorization: Bearer <patient_token>
+
+{
+  "doctorId": "67f8a1b2c3d4e5f678901234",
+  "dateTime": "2026-04-15T09:30:00Z",
+  "notes": "Follow-up visit"
+}
+```
+
+---
+
+## 🔐 Roles & Permissions
+
+| Role | Can Do |
+|------|--------|
+| Patient | Book appointments, view own appointments |
+| Doctor | Update profile, manage specialties, add medical records, view own appointments |
+| Admin | Manage specialties, view all appointments |
+
+---
+
+## 🛡️ Security Features
+
+- JWT Authentication
+- Role-based Authorization Middleware
+- Password Hashing with bcryptjs
+- Joi Input Validation
+- Global Error Handling
+- Protected Routes
+
+---
+
+## 🚀 Future Improvements
+
+- Appointment cancellation & rescheduling
+- Doctor availability time slots
+- Email/SMS notifications
+- Advanced search & filtering
+- Rate limiting & security headers
+- Frontend (React.js)
+
+---
+
+> Made with ❤️ for educational purposes
